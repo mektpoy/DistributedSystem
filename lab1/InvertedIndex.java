@@ -22,7 +22,9 @@ import org.apache.hadoop.util.GenericOptionsParser;
 public class InvertedIndex {
 
 	public static class InvertedIndexMapper extends Mapper<Object, Text, Text, Text>{
+
 		private static final String stopWordPath = "lab1/freword.txt";
+
 		private Text outputKey = new Text();
 		private Text outputVal = new Text();
 		private static final String REGEX = "\\w+";
