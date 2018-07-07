@@ -47,7 +47,6 @@ public class InvertedIndex {
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 			FileSplit fileSplit = (FileSplit) context.getInputSplit();
 			String fileName = fileSplit.getPath().getName();
-			outputVal.set(fileName);
 			String line = value.toString();
 			Pattern p = Pattern.compile(REGEX);
 			Matcher m = p.matcher(line);
@@ -56,6 +55,7 @@ public class InvertedIndex {
 				String word = m.group().toLowerCase();
 				if (stopWords.contains(word)) continue;
 				outputKey.set(word);
+				outputVal.set(fileName + ":" + key.toString());
 				context.write(outputKey, outputVal);
 			}
 		}
