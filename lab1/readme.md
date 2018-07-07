@@ -186,3 +186,6 @@ while 1:
 以下是几个例子：
 
 ![query](query.png)
+
+## 说明
+实验用到的代码均能在服务器上运行，储存在~/lab1中，mapreduce的代码直接用bash compile.sh及bash run.sh即可运行使用。
