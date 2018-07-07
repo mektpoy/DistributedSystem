@@ -2,26 +2,30 @@
 计55 许翰翔 2015011370
 
 ## Write-up
-####How long do you think this project would take you to finish?
-5h
-<br>
+- How long do you think this project would take you to finish?
 
-####How much time did you actually spend on this project?
+5h
+
+- How much time did you actually spend on this project?
+
 很惭愧…大概花了20h…
 装环境+熟悉环境大约花了一半以上的时间…
 实际代码时间在2h内，代码量并不是很大。
 剩下的时间基本上花在处理编译运行、从服务器上传/下载、从hdfs上传/下载。
 <br>
 
-####Acknowledge any assistance you received from anyone except assigned course readings and the course staff.
+- Acknowledge any assistance you received from anyone except assigned course readings and the course staff.
+
 全部独立完成，其中hadoop的代码参考了04 Hadoop实现原理C - 分布式编程环境MapReduce.pdf中的代码。
 <br>
 
-####What test corpus did you load into HDFS? Where is it located (i.e. HDFS path)?
+- What test corpus did you load into HDFS? Where is it located (i.e. HDFS path)?
+
 在hdfs的/user/2015011370/lab1/freword.txt中，储存了part1要求过滤掉的"noise"。
 <br>
 
-####What, if any, "noisy words" did you find as a result of your WordCount? By what criteria did you determine that they were "noisy"? Were you surprised by any of these words?
+- What, if any, "noisy words" did you find as a result of your WordCount? By what criteria did you determine that they were "noisy"? Were you surprised by any of these words?
+
 简单的使用了单词的总出现次数>100即判定为"noise"，确实会过滤掉一些不应过滤的单词，但是大体效果还是很好的。以下列举了其中的一部分：
 <br>
 
@@ -51,7 +55,7 @@ order
 可以发现大多数确实是在任何地方都算得上高频的单词。
 <br>
 
-####Which extensions did you do? Please also detail any interesting results you found.
+- Which extensions did you do? Please also detail any interesting results you found.
 前4个扩展均做了（最后2个扩展不用做？）。
 <br>
 
