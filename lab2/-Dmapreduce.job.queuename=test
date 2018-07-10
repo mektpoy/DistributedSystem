@@ -1,0 +1,1 @@
+ -Dmapreduce.job.queuename=test
