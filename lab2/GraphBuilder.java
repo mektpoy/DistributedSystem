@@ -1,4 +1,6 @@
 import java.io.IOException;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,6 +22,15 @@ public class GraphBuilder {
 		private static final String TitleRegex = "<title>.*</title>";
 		private static final String LinkRegex = "\\[\\[[^\\[\\]]*\\]\\]";
 			
+		public String hash(String str) {
+		    char s[] = str.toCharArray();
+			int len = str.length();
+			long ret = 0;
+			for (int i = 0; i < len; i ++)
+				ret = ret * 31 + s[i];
+			return String.valueOf(ret);
+		}
+
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 			String content = value.toString();
 			Pattern TitlePattern = Pattern.compile(TitleRegex);
@@ -27,7 +38,7 @@ public class GraphBuilder {
 			if (TitleMatcher.find())
 			{
 				String title = TitleMatcher.group().replaceAll("<title>|</title>", "");
-				outputKey.set(title);
+				outputKey.set(hash(title));
 			}
 			else
 			{
@@ -40,15 +51,30 @@ public class GraphBuilder {
 			{
 				String s = LinkMatcher.group();
 				String link = s.substring(2, s.length() - 2);
-				outputVal.set(link);
+				outputVal.set(hash(link));
 				context.write(outputKey, outputVal);
 			}
 		}
 	}
 	
 	public static class GraphBuilderReducer extends Reducer<Text,Text,Text,Text> {
-		public void reduce(Text key, Text values, Context context) throws IOException, InterruptedException {
-			context.write(key, values);
+		private Text outputKey = new Text();
+		private Text outputVal = new Text();
+		public void reduce(Text key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
+			outputKey.set(key);
+			StringBuilder sBuilder = new StringBuilder();
+			boolean first = true;
+			for (Text inputVal : values) {
+				String doc = inputVal.toString();
+				if (!first) {
+					sBuilder.append(",");
+				} else {
+					first = false;
+				}
+				sBuilder.append(doc);
+			}
+			outputVal.set(sBuilder.toString());
+			context.write(outputKey, outputVal);
 		}
 	}
 
