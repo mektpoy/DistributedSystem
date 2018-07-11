@@ -1,6 +1,4 @@
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,7 +49,12 @@ public class GraphBuilder {
 			{
 				String s = LinkMatcher.group();
 				String link = s.substring(2, s.length() - 2);
-				outputVal.set(hash(link));
+				int pos = link.indexOf("|");
+				if (pos != -1) {
+					outputVal.set(hash(link.substring(0, pos)));
+				} else {
+					outputVal.set(hash(link));
+				}
 				context.write(outputKey, outputVal);
 			}
 		}
@@ -86,6 +89,7 @@ public class GraphBuilder {
 			System.exit(2);
 		}
 		Job job = Job.getInstance(conf, "Graph Builder");
+		job.setNumReduceTasks(10);
 		job.setJarByClass(GraphBuilder.class);
 		job.setMapperClass(GraphBuilderMapper.class);
 		job.setCombinerClass(GraphBuilderReducer.class);
