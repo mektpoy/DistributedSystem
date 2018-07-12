@@ -40,8 +40,8 @@ public class PageRanker {
 			if (LinkStr == "") {
 				return;
 			}
-			String[] LinkList = LinkStr.split(",");
-			double val = Double.valueOf(Rank) / LinkList.length;
+			String[] LinkList = LinkStr.split("^");
+			float val = Float.valueOf(Rank) / LinkList.length;
 			for (String Link : LinkList) {
 				outputKey.set(Link);
 				outputVal.set(String.valueOf(val));
@@ -57,7 +57,7 @@ public class PageRanker {
 		public void reduce(Text key, Iterable <Text> values, Context context) throws IOException, InterruptedException {
 			boolean flag = false;
 			String str = "";
-			double total = 0;
+			float total = 0;
 
 			for (Text value : values) {
 				str = value.toString();
@@ -67,11 +67,11 @@ public class PageRanker {
 					context.write(key, outputVal);
 					continue;
 				}
-				double GetRank = Double.valueOf(str);
+				float GetRank = Float.valueOf(str);
 				total += GetRank;
 			}
 
-			double Rank = total;
+			float Rank = total;
 
 			if (!flag) {
 				outputVal.set(String.valueOf(Rank));
@@ -83,14 +83,14 @@ public class PageRanker {
 
 	public static class PageReducer extends Reducer <Text, Text, Text, Text> {
 		private Text outputVal = new Text();
-		private static final double alpha = 0.15;
+		private static final float alpha = 0.15;
 
 		@Override
 		public void reduce(Text key, Iterable <Text> values, Context context) throws IOException, InterruptedException {
 			boolean flag = false;
 			String str = "";
 			String LinkStr = "";
-			double total = 0;
+			float total = 0;
 
 			for (Text value : values) {
 				str = value.toString();
@@ -99,7 +99,7 @@ public class PageRanker {
 					LinkStr = str.substring(1);
 					continue;
 				}
-				double GetRank = Double.valueOf(str);
+				float GetRank = Float.valueOf(str);
 				total += GetRank;
 			}
 
@@ -107,7 +107,7 @@ public class PageRanker {
 				return;
 			}
 
-			double Rank = (1.0 - alpha) * total + alpha;
+			float Rank = (1.0 - alpha) * total + alpha;
 			outputVal.set(String.valueOf(Rank) + ":" + LinkStr);
 			context.write(key, outputVal);
 		}

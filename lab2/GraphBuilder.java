@@ -19,15 +19,6 @@ public class GraphBuilder {
 		private Text outputVal = new Text();
 		private static final String TitleRegex = "<title>.*</title>";
 		private static final String LinkRegex = "\\[\\[[^\\[\\]]*\\]\\]";
-			
-		public String hash(String str) {
-		    char s[] = str.toCharArray();
-			int len = str.length();
-			long ret = 0;
-			for (int i = 0; i < len; i ++)
-				ret = ret * 31 + s[i];
-			return String.valueOf(ret);
-		}
 
 		public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
 			String content = value.toString();
@@ -36,7 +27,7 @@ public class GraphBuilder {
 			if (TitleMatcher.find())
 			{
 				String title = TitleMatcher.group().replaceAll("<title>|</title>", "");
-				outputKey.set(hash(title));
+				outputKey.set(title);
 			}
 			else
 			{
@@ -51,9 +42,9 @@ public class GraphBuilder {
 				String link = s.substring(2, s.length() - 2);
 				int pos = link.indexOf("|");
 				if (pos != -1) {
-					outputVal.set(hash(link.substring(0, pos)));
+					outputVal.set(link.substring(0, pos));
 				} else {
-					outputVal.set(hash(link));
+					outputVal.set(link);
 				}
 				context.write(outputKey, outputVal);
 			}
@@ -70,7 +61,7 @@ public class GraphBuilder {
 			for (Text inputVal : values) {
 				String doc = inputVal.toString();
 				if (!first) {
-					sBuilder.append(",");
+					sBuilder.append("^");
 				} else {
 					first = false;
 				}
@@ -89,10 +80,8 @@ public class GraphBuilder {
 			System.exit(2);
 		}
 		Job job = Job.getInstance(conf, "Graph Builder");
-		job.setNumReduceTasks(10);
 		job.setJarByClass(GraphBuilder.class);
 		job.setMapperClass(GraphBuilderMapper.class);
-		job.setCombinerClass(GraphBuilderReducer.class);
 		job.setReducerClass(GraphBuilderReducer.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
